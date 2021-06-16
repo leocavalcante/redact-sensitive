@@ -1,0 +1,30 @@
+{
+    "name": "leocavalcante/redact-sensitive",
+    "description": "Monolog processor to protect sensitive information from logging",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "leocavalcante",
+            "email": "lc@leocavalcante.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=7.4|>=8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "RedactSensitive\\": "src/"
+        }
+    },
+    "require-dev": {
+        "monolog/monolog": "^2.2",
+        "pestphp/pest": "^1.5"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "RedactSensitiveTests\\": "tests/"
+        }
+    }
+}
