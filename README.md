@@ -1,4 +1,4 @@
-# Redact Sensitive
+# Redact Sensitive [![CI](https://github.com/leocavalcante/redact-sensitive/actions/workflows/ci.yml/badge.svg)](https://github.com/leocavalcante/redact-sensitive/actions/workflows/ci.yml)
 
 🙈 A Monolog processor that protects sensitive data from miss logging.
 
