@@ -50,3 +50,11 @@ it('redacts nested objects', function (): void {
     expect($nested->value)->toBe('foo***');
     expect($nested->nested['value'])->toBe('***qux');
 });
+
+it('throws when finds an un-traversable value', function (): void {
+    $sensitive_keys = ['test' => 3];
+    $processor = new RedactSensitiveProcessor($sensitive_keys);
+
+    $record = ['context' => ['test' => fopen(__FILE__, 'rb')]];
+    $processor($record);
+})->throws(\UnexpectedValueException::class, 'Don\'t know how to traverse value at key test');
