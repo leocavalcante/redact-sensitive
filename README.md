@@ -1,5 +1,6 @@
-# Redact sensitive
-🙈 Monolog processor to protect sensitive information from logging.
+# Redact Sensitive
+
+🙈 A Monolog processor that protects sensitive data from miss logging.
 
 Avoids logging something like `{"api_key":"mysupersecretapikey"}` by masking partially or completely sensitive data:
 ```text
@@ -149,9 +150,8 @@ $logger->info('Nested', [
 Example.INFO: Nested {"nested":{"arr":{"value":"abc***","or_obj":{"stdClass":{"secret":"***********one"}}}}} []
 ```
 
-## That is all
-
+## Thanks
 Feel free to open any issues or PRs.
 
 ---
-<center>MIT &copy; 2021</center>
+MIT &copy; 2021
