@@ -11,7 +11,8 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "php": ">=7.4|>=8.0"
+        "php": ">=7.4|>=8.0",
+        "monolog/monolog": "^2.2"
     },
     "autoload": {
         "psr-4": {
@@ -19,7 +20,6 @@
         }
     },
     "require-dev": {
-        "monolog/monolog": "^2.2",
         "pestphp/pest": "^1.5"
     },
     "autoload-dev": {
