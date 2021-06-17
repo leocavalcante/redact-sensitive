@@ -39,12 +39,14 @@ it('redacts nested arrays', function (): void {
 it('redacts nested objects', function (): void {
     $nested = new \stdClass();
     $nested->value = 'foobar';
+    $nested->nested = ['value' => 'bazqux'];
 
-    $sensitive_keys = ['test' => ['nested' => ['value' => 3]]];
+    $sensitive_keys = ['test' => ['nested' => ['value' => 3, 'nested' => ['value' => -3]]]];
     $processor = new RedactSensitiveProcessor($sensitive_keys);
 
     $record = ['context' => ['test' => ['nested' => $nested]]];
 
     expect($processor($record))->toBe(['context' => ['test' => ['nested' => $nested]]]);
     expect($nested->value)->toBe('foo***');
+    expect($nested->nested['value'])->toBe('***qux');
 });
