@@ -73,6 +73,8 @@ class RedactSensitiveProcessor implements ProcessorInterface
                 }
 
                 $arr[$key] = $this->traverse($key, $value, $keys[$key]);
+            } else {
+                $arr[$key] = $this->traverse($key, $value, $keys);
             }
         }
 
