@@ -70,10 +70,9 @@ class RedactSensitiveProcessor implements ProcessorInterface
             if (array_key_exists($key, $keys)) {
                 if (is_scalar($value)) {
                     $arr[$key] = $this->redact((string) $value, $keys[$key]);
-                    continue;
+                } elseif (null !== $value) {
+                    $arr[$key] = $this->traverse($key, $value, $keys[$key]);
                 }
-
-                $arr[$key] = $this->traverse($key, $value, $keys[$key]);
             } elseif (false === is_scalar($value) && null !== $value) {
                 $arr[$key] = $this->traverse($key, $value, $keys);
             }
@@ -88,10 +87,9 @@ class RedactSensitiveProcessor implements ProcessorInterface
             if (array_key_exists($key, $keys)) {
                 if (is_scalar($value)) {
                     $obj->{$key} = $this->redact((string) $value, $keys[$key]);
-                    continue;
+                } elseif (null !== $value) {
+                    $obj->{$key} = $this->traverse($key, $value, $keys[$key]);
                 }
-
-                $obj->{$key} = $this->traverse($key, $value, $keys[$key]);
             }
         }
 
