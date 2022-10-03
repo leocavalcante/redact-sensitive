@@ -46,11 +46,12 @@ class RedactSensitiveProcessor implements ProcessorInterface
     }
 
     /**
+     * @param string|int $key
      * @param array|object $value
      * @param array|int $keys
      * @return array|object
      */
-    private function traverse(string $key, $value, $keys)
+    private function traverse($key, $value, $keys)
     {
         if (is_array($value)) {
             return $this->traverseArr($value, $keys);
@@ -73,7 +74,7 @@ class RedactSensitiveProcessor implements ProcessorInterface
                 }
 
                 $arr[$key] = $this->traverse($key, $value, $keys[$key]);
-            } elseif (false === is_scalar($value)) {
+            } elseif (false === is_scalar($value) && null !== $value) {
                 $arr[$key] = $this->traverse($key, $value, $keys);
             }
         }
