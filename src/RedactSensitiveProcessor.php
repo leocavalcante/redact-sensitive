@@ -76,7 +76,7 @@ class RedactSensitiveProcessor implements ProcessorInterface
         foreach ($arr as $key => $value) {
             if (array_key_exists($key, $keys)) {
                 if (is_null($value)) {
-                    $arr[$key] = $this->redact($value, $keys[$key]);
+                    $arr[$key] = $this->redact($value, 0);
                 }
 
                 if (is_scalar($value)) {
@@ -96,7 +96,7 @@ class RedactSensitiveProcessor implements ProcessorInterface
         foreach (get_object_vars($obj) as $key => $value) {
             if (array_key_exists($key, $keys)) {
                 if (is_null($value)) {
-                    $obj->{$key} = $this->redact($value, $keys[$key]);
+                    $obj->{$key} = $this->redact($value, 0);
                 }
 
                 if (is_scalar($value)) {
