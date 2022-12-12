@@ -37,8 +37,12 @@ class RedactSensitiveProcessor implements ProcessorInterface
         return $record;
     }
 
-    private function redact(string $value, int $length): string
+    private function redact(?string $value, int $length): string
     {
+        if (is_null($value)) {
+            return str_repeat($this->replacement, 4);
+        }
+
         $hidden_length = strlen($value) - abs($length);
         $hidden = str_repeat($this->replacement, $hidden_length);
 
@@ -46,12 +50,16 @@ class RedactSensitiveProcessor implements ProcessorInterface
     }
 
     /**
-     * @param array|object $value
+     * @param array|object|null $value
      * @param array|int $keys
-     * @return array|object
+     * @return array|object|string
      */
     private function traverse(string $key, $value, $keys)
     {
+        if (is_null($value)) {
+            return str_repeat($this->replacement, 4);
+        }
+
         if (is_array($value)) {
             return $this->traverseArr($value, $keys);
         }
@@ -67,6 +75,10 @@ class RedactSensitiveProcessor implements ProcessorInterface
     {
         foreach ($arr as $key => $value) {
             if (array_key_exists($key, $keys)) {
+                if (is_null($value)) {
+                    $arr[$key] = $this->redact($value, $keys[$key]);
+                }
+
                 if (is_scalar($value)) {
                     $arr[$key] = $this->redact((string) $value, $keys[$key]);
                     continue;
@@ -83,6 +95,10 @@ class RedactSensitiveProcessor implements ProcessorInterface
     {
         foreach (get_object_vars($obj) as $key => $value) {
             if (array_key_exists($key, $keys)) {
+                if (is_null($value)) {
+                    $obj->{$key} = $this->redact($value, $keys[$key]);
+                }
+
                 if (is_scalar($value)) {
                     $obj->{$key} = $this->redact((string) $value, $keys[$key]);
                     continue;
