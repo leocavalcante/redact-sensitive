@@ -81,7 +81,9 @@ class RedactSensitiveProcessor implements ProcessorInterface
                 }
 
                 if (is_scalar($value)) {
-                    $arr[$key] = $this->redact((string) $value, $keys[$key]);
+                    $length = is_int($keys[$key]) ? $keys[$key] : 0;
+
+                    $arr[$key] = $this->redact((string) $value, $length);
                     continue;
                 }
 
@@ -102,7 +104,9 @@ class RedactSensitiveProcessor implements ProcessorInterface
                 }
 
                 if (is_scalar($value)) {
-                    $obj->{$key} = $this->redact((string) $value, $keys[$key]);
+                    $length = is_int($keys[$key]) ? $keys[$key] : 0;
+
+                    $obj->{$key} = $this->redact((string) $value, $length);
                     continue;
                 }
 
