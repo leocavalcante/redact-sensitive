@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace RedactSensitive;
 
+use Monolog\LogRecord;
 use Monolog\Processor\ProcessorInterface;
 use UnexpectedValueException;
 
@@ -33,10 +34,11 @@ class RedactSensitiveProcessor implements ProcessorInterface
         $this->replacement = $replacement;
     }
 
-    public function __invoke(array $record): array
+
+    public function __invoke(LogRecord $record): LogRecord
     {
-        $record['context'] = $this->traverseArr($record['context'], $this->sensitiveKeys);
-        return $record;
+        $redactedContext = $this->traverseArr($record->context, $this->sensitiveKeys);
+        return $record->with(context: $redactedContext);
     }
 
     private function redact(string $value, int $length): string

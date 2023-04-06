@@ -1,9 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace RedactSensitiveTests;
 
 use Monolog\Handler\TestHandler;
+use Monolog\Level;
 use Monolog\Logger;
+use Monolog\LogRecord;
 use RedactSensitive\RedactSensitiveProcessor;
 
 it('plays nice with monolog', function (): void {
@@ -13,7 +17,8 @@ it('plays nice with monolog', function (): void {
     $logger = new Logger('Test', [$handler], [$processor]);
     $logger->info('Testing', ['test_key' => 'test_value']);
 
-    expect($handler->hasRecordThatPasses(function (array $record): bool {
-        return $record['context']['test_key'] === 'test******';
-    }, Logger::INFO))->toBeTrue();
+    expect($handler->hasRecordThatPasses(function (LogRecord $record): bool {
+        return $record->context['test_key'] === 'test******';
+    }, Level::Info))->toBeTrue();
 });
+
