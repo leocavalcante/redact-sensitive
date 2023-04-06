@@ -38,6 +38,14 @@ it('redacts nested arrays', function (): void {
     expect($processor($record)->context)->toBe(['test' => ['nested' => 'foo***']]);
 });
 
+it('redacts inside nested arrays', function (): void {
+    $sensitive_keys = ['nested' => 3];
+    $processor = new RedactSensitiveProcessor($sensitive_keys);
+
+    $record = $this->getRecord(context: ['test' => ['nested' => 'foobar']]);
+    expect($processor($record)->context)->toBe(['test' => ['nested' => 'foo***']]);
+});
+
 it('redacts nested objects', function (): void {
     $nested = new \stdClass();
     $nested->value = 'foobar';
@@ -50,6 +58,21 @@ it('redacts nested objects', function (): void {
 
     expect($processor($record)->context)->toBe(['test' => ['nested' => $nested]]);
     expect($nested->value)->toBe('foo***');
+    expect($nested->nested['value'])->toBe('***qux');
+});
+
+it('redacts inside nested objects', function (): void {
+    $nested = new \stdClass();
+    $nested->value = 'foobar';
+    $nested->nested = ['value' => 'bazqux'];
+
+    $sensitive_keys = ['nested' => ['value' => -3]];
+    $processor = new RedactSensitiveProcessor($sensitive_keys);
+
+    $record = $this->getRecord(context: ['test' => ['nested' => $nested]]);
+
+    expect($processor($record)->context)->toBe(['test' => ['nested' => $nested]]);
+    expect($nested->value)->toBe('***bar');
     expect($nested->nested['value'])->toBe('***qux');
 });
 
