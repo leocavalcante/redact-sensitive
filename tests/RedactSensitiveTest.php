@@ -14,6 +14,22 @@ it('redacts records contexts', function (): void {
     expect($processor($record)->context)->toBe(['test' => 'foo***']);
 });
 
+it('truncates masked characters', function (): void {
+    $sensitive_keys = ['test' => 3];
+    $processor = new RedactSensitiveProcessor($sensitive_keys, lengthLimit: 5);
+
+    $record = $this->getRecord(context: ['test' => 'foobar']);
+    expect($processor($record)->context)->toBe(['test' => 'foo**']);
+});
+
+it('truncates visible characters', function (): void {
+    $sensitive_keys = ['test' => 3];
+    $processor = new RedactSensitiveProcessor($sensitive_keys, lengthLimit: 2);
+
+    $record = $this->getRecord(context: ['test' => 'foobar']);
+    expect($processor($record)->context)->toBe(['test' => 'fo']);
+});
+
 it('overrides default replacement', function (): void {
     $sensitive_keys = ['test' => 3];
     $processor = new RedactSensitiveProcessor($sensitive_keys, '_');
@@ -28,6 +44,22 @@ it('redacts from right to left', function (): void {
 
     $record = $this->getRecord(context: ['test' => 'foobar']);
     expect($processor($record)->context)->toBe(['test' => '***bar']);
+});
+
+it('truncates masked from right to left', function (): void {
+    $sensitive_keys = ['test' => -3];
+    $processor = new RedactSensitiveProcessor($sensitive_keys, lengthLimit: 4);
+
+    $record = $this->getRecord(context: ['test' => 'foobar']);
+    expect($processor($record)->context)->toBe(['test' => '*bar']);
+});
+
+it('truncates visible from right to left', function (): void {
+    $sensitive_keys = ['test' => -3];
+    $processor = new RedactSensitiveProcessor($sensitive_keys, lengthLimit: 2);
+
+    $record = $this->getRecord(context: ['test' => 'foobar']);
+    expect($processor($record)->context)->toBe(['test' => 'ar']);
 });
 
 it('redacts nested arrays', function (): void {
