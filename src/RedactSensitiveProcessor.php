@@ -21,6 +21,7 @@ class RedactSensitiveProcessor implements ProcessorInterface
 
     private array $sensitiveKeys;
     private string $replacement;
+    private string $template;
     private ?int $lengthLimit;
 
     /**
@@ -28,12 +29,14 @@ class RedactSensitiveProcessor implements ProcessorInterface
      *
      * @param array $sensitiveKeys Keys that should trigger the redaction.
      * @param string $replacement The replacement character.
+     * @param string $template Template for replacement characters.
      * @param int|null $lengthLimit Max length after redaction.
      */
-    public function __construct(array $sensitiveKeys, string $replacement = self::DEFAULT_REPLACEMENT, ?int $lengthLimit = null)
+    public function __construct(array $sensitiveKeys, string $replacement = self::DEFAULT_REPLACEMENT, string $template = '%s', ?int $lengthLimit = null)
     {
         $this->sensitiveKeys = $sensitiveKeys;
         $this->replacement = $replacement;
+        $this->template = $template;
         $this->lengthLimit = $lengthLimit;
     }
 
@@ -48,8 +51,9 @@ class RedactSensitiveProcessor implements ProcessorInterface
     {
         $hidden_length = strlen($value) - abs($length);
         $hidden = str_repeat($this->replacement, $hidden_length);
+        $placeholder = sprintf($this->template, $hidden);
 
-        $result = substr_replace($value, $hidden, max(0, $length), $hidden_length);
+        $result = substr_replace($value, $placeholder, max(0, $length), $hidden_length);
 
         $result = $length > 0
             ? substr($result, 0, $this->lengthLimit)

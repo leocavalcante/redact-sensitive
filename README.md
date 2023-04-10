@@ -91,6 +91,45 @@ $logger->info('Completely hidden', ['you_know_nothing' => 'John Snow']);
 Example.INFO: Completely hidden {"you_know_nothing":"*********"} []
 ```
 
+### Custom format
+
+Feel free to customize a replacement character `*` and/or provide your own template.
+
+```php
+use Monolog\Handler\StreamHandler;
+use RedactSensitive\RedactSensitiveProcessor;
+
+$sensitive_keys = ['secret' => 2];
+
+$processor = new RedactSensitiveProcessor($sensitive_keys, template: '%s(redacted)');
+
+$logger = new \Monolog\Logger('Example', [new StreamHandler(STDOUT)]);
+$logger->pushProcessor($processor);
+
+$logger->info('Sensitive', ['secret' => 'my_secret_value']);
+```
+```text
+Example.INFO: Sensitive {"secret":"my*************(redacted)"} []
+```
+
+Custom template allows to discard the masked characters altogether:
+```php
+use Monolog\Handler\StreamHandler;
+use RedactSensitive\RedactSensitiveProcessor;
+
+$sensitive_keys = ['secret' => 2];
+
+$processor = new RedactSensitiveProcessor($sensitive_keys, template: '...');
+
+$logger = new \Monolog\Logger('Example', [new StreamHandler(STDOUT)]);
+$logger->pushProcessor($processor);
+
+$logger->info('Sensitive', ['secret' => 'my_secret_value']);
+```
+```text
+Example.INFO: Sensitive {"secret":"my..."} []
+```
+
 ### Length limit
 
 Use `lengthLimit` to truncate redacted sensitive information, such as lengthy tokens.

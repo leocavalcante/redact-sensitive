@@ -14,6 +14,22 @@ it('redacts records contexts', function (): void {
     expect($processor($record)->context)->toBe(['test' => 'foo***']);
 });
 
+it('redacts using template', function (): void {
+    $sensitive_keys = ['test' => 2];
+    $processor = new RedactSensitiveProcessor($sensitive_keys, template: '%s(redacted)');
+
+    $record = $this->getRecord(context: ['test' => 'foobar']);
+    expect($processor($record)->context)->toBe(['test' => 'fo****(redacted)']);
+});
+
+it('redacts discarding masked', function (): void {
+    $sensitive_keys = ['test' => 1];
+    $processor = new RedactSensitiveProcessor($sensitive_keys, template: '...');
+
+    $record = $this->getRecord(context: ['test' => 'foobar123']);
+    expect($processor($record)->context)->toBe(['test' => 'f...']);
+});
+
 it('truncates masked characters', function (): void {
     $sensitive_keys = ['test' => 3];
     $processor = new RedactSensitiveProcessor($sensitive_keys, lengthLimit: 5);
