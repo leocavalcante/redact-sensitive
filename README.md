@@ -91,6 +91,27 @@ $logger->info('Completely hidden', ['you_know_nothing' => 'John Snow']);
 Example.INFO: Completely hidden {"you_know_nothing":"*********"} []
 ```
 
+### Length limit
+
+Use `lengthLimit` to truncate redacted sensitive information, such as lengthy tokens.
+
+```php
+use Monolog\Handler\StreamHandler;
+use RedactSensitive\RedactSensitiveProcessor;
+
+$sensitive_keys = ['access_token' => 0];
+
+$processor = new RedactSensitiveProcessor($sensitive_keys, lengthLimit: 5);
+
+$logger = new \Monolog\Logger('Example', [new StreamHandler(STDOUT)]);
+$logger->pushProcessor($processor);
+
+$logger->info('Truncated secret', ['access_token' => 'Very long JWT ...']);
+```
+```text
+Example.INFO: Truncated secret {"access_token":"*****"} []
+```
+
 ### Right to left
 
 And, as said before, you can mask the value from right to left using negative values.
