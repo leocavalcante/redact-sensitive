@@ -55,17 +55,15 @@ class RedactSensitiveProcessor implements ProcessorInterface
             return $value;
         }
 
-        $hidden_length = $valueLength - abs($length);
-        $hidden = str_repeat($this->replacement, $hidden_length);
+        $hiddenLength = $valueLength - abs($length);
+        $hidden = str_repeat($this->replacement, $hiddenLength);
         $placeholder = sprintf($this->template, $hidden);
 
-        $result = substr_replace($value, $placeholder, max(0, $length), $hidden_length);
+        $result = substr_replace($value, $placeholder, max(0, $length), $hiddenLength);
 
-        $result = $length > 0
+        return $length > 0
             ? substr($result, 0, $this->lengthLimit)
             : substr($result, -$this->lengthLimit);
-
-        return $result;
     }
 
     /**
