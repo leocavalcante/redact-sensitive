@@ -49,7 +49,13 @@ class RedactSensitiveProcessor implements ProcessorInterface
 
     private function redact(string $value, int $length): string
     {
-        $hidden_length = strlen($value) - abs($length);
+        $valueLength = strlen($value);
+
+        if ($valueLength === 0) {
+            return $value;
+        }
+
+        $hidden_length = $valueLength - abs($length);
         $hidden = str_repeat($this->replacement, $hidden_length);
         $placeholder = sprintf($this->template, $hidden);
 
