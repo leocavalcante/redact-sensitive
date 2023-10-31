@@ -124,6 +124,14 @@ it('redacts inside nested objects', function (): void {
     expect($nested->nested['value'])->toBe('***qux');
 });
 
+it('preserves empty values', function (): void {
+    $sensitive_keys = ['test' => 3, 'optionalKey' => 10];
+    $processor = new RedactSensitiveProcessor($sensitive_keys);
+
+    $record = $this->getRecord(context: ['test' => 'foobar', 'optionalKey' => '']);
+    expect($processor($record)->context)->toBe(['test' => 'foo***', 'optionalKey' => '']);
+});
+
 it('throws when finds an un-traversable value', function (): void {
     $sensitive_keys = ['test' => 3];
     $processor = new RedactSensitiveProcessor($sensitive_keys);
