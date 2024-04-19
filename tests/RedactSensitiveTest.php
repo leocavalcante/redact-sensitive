@@ -139,3 +139,11 @@ it('throws when finds an un-traversable value', function (): void {
     $record = $this->getRecord(context: ['test' => fopen(__FILE__, 'rb')]);
     $processor($record);
 })->throws(\UnexpectedValueException::class, 'Don\'t know how to traverse value at key test');
+
+it('ignore when null value', function (): void {
+    $sensitive_keys = ['test' => 3];
+    $processor = new RedactSensitiveProcessor($sensitive_keys);
+
+    $record = $this->getRecord(context: ['test' => 'foobar', 'optionalKey' => null]);
+    expect($processor($record)->context)->toBe(['test' => 'foo***', 'optionalKey' => null]);
+});
