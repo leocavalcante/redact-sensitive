@@ -95,7 +95,7 @@ class RedactSensitiveProcessor implements ProcessorInterface
             } else {
                 if (array_key_exists($key, $keys)) {
                     $arr[$key] = $this->traverse($key, $value, $keys[$key]);
-                } else {
+                } elseif (null !== $value) {
                     $arr[$key] = $this->traverse($key, $value, $keys);
                 }
             }
@@ -115,7 +115,7 @@ class RedactSensitiveProcessor implements ProcessorInterface
             } else {
                 if (array_key_exists($key, $keys)) {
                     $obj->{$key} = $this->traverse($key, $value, $keys[$key]);
-                } else {
+                } elseif (null !== $value) {
                     $obj->{$key} = $this->traverse($key, $value, $keys);
                 }
             }
