@@ -47,7 +47,7 @@ class RedactSensitiveProcessor implements ProcessorInterface
         return $record->with(context: $redactedContext);
     }
 
-    private function redact(int|string $value, int $length): string
+    private function redact(string $value, int $length): string
     {
         $valueLength = strlen($value);
 
@@ -71,7 +71,7 @@ class RedactSensitiveProcessor implements ProcessorInterface
      * @param array|int $keys
      * @return array|object
      */
-    private function traverse(string $key, $value, $keys)
+    private function traverse(int|string $key, $value, $keys)
     {
         if (is_array($value)) {
             return $this->traverseArr($value, $keys);
