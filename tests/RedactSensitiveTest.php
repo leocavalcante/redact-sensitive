@@ -147,3 +147,11 @@ it('ignore when null value', function (): void {
     $record = $this->getRecord(context: ['test' => 'foobar', 'optionalKey' => null]);
     expect($processor($record)->context)->toBe(['test' => 'foo***', 'optionalKey' => null]);
 });
+
+it('redacts nested values when key is integer', function (): void {
+    $sensitive_keys = ['test' => 3];
+    $processor = new RedactSensitiveProcessor($sensitive_keys);
+
+    $record = $this->getRecord(context: [0 => ['good' => 'value'], 1 => ['test' => 'foobar']]);
+    expect($processor($record)->context)->toBe([0 => ['good' => 'value'], 1 => ['test' => 'foo***']]);
+});
