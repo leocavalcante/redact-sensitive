@@ -47,7 +47,7 @@ class RedactSensitiveProcessor implements ProcessorInterface
         return $record->with(context: $redactedContext);
     }
 
-    private function redact(string $value, int $length): string
+    private function redact(int|string $value, int $length): string
     {
         $valueLength = strlen($value);
 
