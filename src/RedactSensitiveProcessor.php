@@ -81,7 +81,7 @@ class RedactSensitiveProcessor implements ProcessorInterface
             return $this->traverseObj($value, $keys);
         }
 
-        throw new UnexpectedValueException("Don't know how to traverse value at key $key");
+        throw new UnexpectedValueException("Don't know how to traverse value of type " . gettype($value) ." at key $key");
     }
 
     private function traverseArr(array $arr, array $keys): array
@@ -93,7 +93,7 @@ class RedactSensitiveProcessor implements ProcessorInterface
                 }
                 continue;
             } else {
-                if (array_key_exists($key, $keys)) {
+                if (array_key_exists($key, $keys) && is_array($keys[$key])) {
                     $arr[$key] = $this->traverse($key, $value, $keys[$key]);
                 } elseif (null !== $value) {
                     $arr[$key] = $this->traverse($key, $value, $keys);
@@ -113,7 +113,7 @@ class RedactSensitiveProcessor implements ProcessorInterface
                 }
                 continue;
             } else {
-                if (array_key_exists($key, $keys)) {
+                if (array_key_exists($key, $keys) && is_array($keys[$key])) {
                     $obj->{$key} = $this->traverse($key, $value, $keys[$key]);
                 } elseif (null !== $value) {
                     $obj->{$key} = $this->traverse($key, $value, $keys);

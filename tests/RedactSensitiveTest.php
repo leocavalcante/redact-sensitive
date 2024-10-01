@@ -138,7 +138,17 @@ it('throws when finds an un-traversable value', function (): void {
 
     $record = $this->getRecord(context: ['test' => fopen(__FILE__, 'rb')]);
     $processor($record);
-})->throws(\UnexpectedValueException::class, 'Don\'t know how to traverse value at key test');
+})->throws(\UnexpectedValueException::class, 'Don\'t know how to traverse value of type resource at key test');
+
+it('should not throw when non-scalar value, but keys are not nested', function (): void {
+    $sensitive_keys = ['test' => -4];
+    $obj = new \stdClass();
+    $processor = new RedactSensitiveProcessor($sensitive_keys);
+
+    $record = $this->getRecord(context: ['test' => $obj]);
+    $processor($record);
+    expect($processor($record)->context)->toBe(['test' => $obj]);
+});
 
 it('ignore when null value', function (): void {
     $sensitive_keys = ['test' => 3];
