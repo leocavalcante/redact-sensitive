@@ -166,7 +166,7 @@ it('redacts nested values when key is integer', function (): void {
     expect($processor($record)->context)->toBe([0 => ['good' => 'value'], 1 => ['test' => 'foo***']]);
 });
 
-it('creates copies of readonly properties and redacts them', function (): void {
+it('creates copies of objects with readonly properties and redacts them', function (): void {
     $sensitive_keys = ['test' => 0];
     $processor = new RedactSensitiveProcessor($sensitive_keys);
 
