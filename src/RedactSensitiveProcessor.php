@@ -106,9 +106,8 @@ class RedactSensitiveProcessor implements ProcessorInterface
 
     private function traverseObj(object $obj, array $keys): object
     {
-        $hasReadOnlyProperties = $this->containsReadOnlyProperties($obj);
         $vars = get_object_vars($obj);
-        if ($hasReadOnlyProperties) {
+        if ($this->containsReadOnlyProperties($obj)) {
             // create a new object so that redacted copies of readonly variables
             // can be stored on it
             $obj = new \stdClass();
