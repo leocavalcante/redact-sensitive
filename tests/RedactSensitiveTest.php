@@ -170,13 +170,13 @@ it('creates copies of objects with readonly properties and redacts them', functi
     $sensitive_keys = ['test' => 0];
     $processor = new RedactSensitiveProcessor($sensitive_keys);
 
-    $readonlyPropertiesObject = new class {
+    $readonly_properties_object = new class {
         public function __construct(
             public readonly string $test = 'foobar',
         ) {}
     };
 
-    $record = $this->getRecord(context: ['foo' => $readonlyPropertiesObject]);
+    $record = $this->getRecord(context: ['foo' => $readonly_properties_object]);
     expect($processor($record)->context['foo']->test)->toBe('******');
 });
 
