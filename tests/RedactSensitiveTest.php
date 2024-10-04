@@ -165,3 +165,58 @@ it('redacts nested values when key is integer', function (): void {
     $record = $this->getRecord(context: [0 => ['good' => 'value'], 1 => ['test' => 'foobar']]);
     expect($processor($record)->context)->toBe([0 => ['good' => 'value'], 1 => ['test' => 'foo***']]);
 });
+
+it('creates copies of readonly properties and redacts them', function (): void {
+    $sensitive_keys = ['test' => 0];
+    $processor = new RedactSensitiveProcessor($sensitive_keys);
+
+    $readonlyPropertiesObject = new class {
+        public function __construct(
+            public readonly string $test = 'foobar',
+        ) {}
+    };
+
+    $record = $this->getRecord(context: ['foo' => $readonlyPropertiesObject]);
+    expect($processor($record)->context['foo']->test)->toBe('******');
+});
+
+it('can redact readonly properties on custom object instances', function (): void {
+    $sensitive_keys = ['test' => 0];
+    $processor = new RedactSensitiveProcessor($sensitive_keys);
+
+    class Foo {
+        public function __construct(
+            public readonly string $test = 'foobar',
+        ) {}
+    }
+    $f = new Foo;
+    $record = $this->getRecord(context: ['foo' => $f]);
+    expect($processor($record)->context['foo']->test)
+        ->toBe('******')
+        ->and($f->test)
+        ->toBe('foobar');
+});
+
+it('can redact readonly properties on custom nested objects', function (): void {
+    $sensitive_keys = ['test' => 0];
+    $processor = new RedactSensitiveProcessor($sensitive_keys);
+
+    class Bar {
+        public function __construct(
+            public readonly object $baz = new Baz
+        ) {}
+    }
+
+    class Baz {
+        public function __construct(
+            public readonly string $test = 'foobar',
+        ) {}
+    }
+
+    $f = new Bar;
+    $record = $this->getRecord(context: ['foo' => $f]);
+    expect($processor($record)->context['foo']->baz->test)
+        ->toBe('******')
+        ->and($f->baz->test)
+        ->toBe('foobar');
+});
